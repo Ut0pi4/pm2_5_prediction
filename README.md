@@ -35,7 +35,16 @@ The dataset for this task can be downloaded by running the code below.
 ```python
 $ python download_data.py --dest YOUR_DATASET_PATH
 ```
-Default dataset path is `../air_quality`.
+Default `dest` is `../air_quality`.
+
+# Download pretrained model
+To download the best pretrained model, please run the following code:
+```python
+$ python download_model.py --checkpoint PATH_TO_CHECKPOINT
+```
+
+Default `checkpoint` is `../`.
+
 # Preprocess Data
 As mentioned in the report, some data has been filtered out for the model to work.
 To run the preprocessing of the dataset,  run
@@ -56,7 +65,7 @@ Default parameters:
 1. dest: `".../air_quality"`
 2. epochs: `10`
 3. weights: `[0.05, 0.05, 1, 3, 3, 5]`
-4. checkpoint: `'../checkpoint_lstm_1.pth.tar'`
+4. checkpoint: `'../checkpoint_lstm.pth.tar'`
 
 # Evaluate
 To evaluate the model, run the following code.
