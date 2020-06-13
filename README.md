@@ -60,10 +60,21 @@ Default parameters:
 To evaluate the model, run the following code.
 ```python
 $ python test.py --dest YOUR_DATASET_PATH 
-                  --epochs EPOCHS_TO_TRAIN 
+                 --epochs EPOCHS_TO_TRAIN 
 ```
 Default parameters are the same as train.py.
+
+# Results
+
+Here I will display the accuracy results of my best model. 
+
+![Alt text](https://github.com/Ut0pi4/pm2_5_prediction/blob/master/img/weight_best_graph.JPG "Class accuracy on test data (PM2.5 2014)")
+
+Each row corresponds to accuracy (in %) for each of the PM2.5 class. The accuracy mean for this model is `0.464`.
+
 <!---
+
+
 ___
 ### Some definitions
 
