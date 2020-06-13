@@ -24,16 +24,17 @@ def maybe_download(filename, work_directory):
 def extract_files(filepath):
     """Extract the images into a 4D uint8 numpy array [index, y, x, depth]."""
     print('Extracting', filepath)
-
+    
     split = filepath.split("/")
-    dest = "../" + split[1][:-7]
+    dest = "../" + split[1]
 
     with zipfile.ZipFile(filepath+".zip", 'r') as zip_ref:
+        # set_trace()
         for member in zip_ref.infolist(): 
+            # set_trace()
             member.filename = member.filename.encode("cp437").decode("utf8")
             zip_ref.extract(member, dest)
-
-
+    
     for item in os.listdir(filepath): 
         
         if item.endswith(".zip"): 
@@ -42,7 +43,7 @@ def extract_files(filepath):
             zip_ref = zipfile.ZipFile(zipfile_path) 
             zip_ref.extractall(filepath) 
             zip_ref.close() 
-            
+    print("extract complete")        
 
 def download_and_extract(file_name, dest):
     filepath = maybe_download(file_name, dest)

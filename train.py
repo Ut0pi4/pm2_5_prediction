@@ -234,7 +234,7 @@ if __name__ == "__main__":
 
     if epoch <= epochs:
         print("start training from epoch %d" %epoch)
-        train(data_e_1, data_e_2, data_d, encoder, decoder, encoder_optimizer, decoder_optimizer, epoch, epochs)
+        train(data_e_1, data_e_2, data_d, encoder, decoder, encoder_optimizer, decoder_optimizer, epoch, epochs, weights=weights)
     else:
         print("epoch trained (%d) exceeds maximum epochs (%d)" %(epoch, epochs))
     print("finish training")
