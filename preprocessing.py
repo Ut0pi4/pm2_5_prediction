@@ -444,7 +444,12 @@ def preprocess(file_name, dest):
 
     feature_data = normalize_concat((SO2s_years, NO2s_years, O3s_years, COs_years))
     
-    return feature_data, pm2_5s_years
+    feature_data_2014 = feature_data[0]
+    pm2_5s_years_2014 = pm2_5s_years[0]
+    feature_data = concat_years(feature_data[1:])
+    pm2_5s_years = concat_years(pm2_5s_years[1:])
+
+    return feature_data, pm2_5s_years, feature_data_2014, pm2_5s_years_2014 
 
 
 

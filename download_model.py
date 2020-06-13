@@ -17,7 +17,7 @@ import glob
 
 # FILE_ID = "1QspxOJMDf_rAWVV7AU_Nc0rjo1_EPEDW"
 # DESTINATION = '../face_mask_detection.zip'
-SOURCE_URL = "https://cloud.tsinghua.edu.cn/d/7522b892989d475a8067/files/?p=%2Fmod2.pkl&dl=1"
+SOURCE_URL = "https://cloud.tsinghua.edu.cn/f/2df552c9cd39405588c9/?dl=1"
 
 def maybe_download(filename, work_directory):
 	"""Download the data from website, unless it's already here."""
@@ -41,4 +41,4 @@ if __name__=="__main__":
 	
 	parser.add_argument('--checkpoint', type=str, default="../", help='path to checkpoint.')
 	args = parser.parse_args()
-	maybe_download('checkpoint_lstm_1.pth.tar', args.checkpoint)
+	maybe_download('checkpoint_lstm.pth.tar', args.checkpoint)

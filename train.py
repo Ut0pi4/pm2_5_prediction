@@ -207,14 +207,13 @@ if __name__ == "__main__":
     file_name = "北京空气质量.zip"
     dest = args.dest
     
-    feature_data, pm2_5s = preprocess(file_name, dest)
+    feature_data, pm2_5s, _, _ = preprocess(file_name, dest)
 
     
-    train_set = concat_years(pm2_5s[1:])
-    data_e_1 = concat_years(feature_data[1:])
-
-    data_e_2 = train_set[:, :24, :]
-    data_d = train_set[:, 24:30, :]
+    
+    data_e_1 = feature_data
+    data_e_2 = pm2_5s[:, :24, :]
+    data_d = pm2_5s[:, 24:30, :]
 
     checkpoint = args.checkpoint
     encoder = EncoderRNN(input_size_enc, hidden_size).to(device)
