@@ -52,8 +52,6 @@ def reshape_data(data, i):
     data1 = data[:, :, :i]
     data2 = data[:, :, i+1:]
     new_data = np.concatenate((data1, data2), axis=2)
-#     set_trace()
-#     new_data = new_data.reshape((-1, 24, 34))
     return new_data
 
 def save_checkpoint(epoch, encoder, decoder, encoder_optimizer, decoder_optimizer):
@@ -136,7 +134,7 @@ def train_one_epoch(input_tensor_1, input_tensor_2, target_tensor, encoder, deco
     return loss.item() / target_length
 
 def train(data_e_1, data_e_2, data_d, encoder, decoder, encoder_optimizer, decoder_optimizer, 
-               start_epoch, epochs, weights=[1.0, 1.0, 1.0, 1.0, 1.0, 1.0], print_every=1, 
+               start_epoch, epochs, weights=[0.05, 0.05, 1, 3, 3, 5], print_every=1, 
                plot_every=1, learning_rate=0.01):
     encoder.train()
     decoder.train()
