@@ -70,8 +70,8 @@ class AttentionRevisedDecoderRNN(nn.Module):
         
         self.hidden_size = hidden_size
         self.n_layers = n_layers
-        input_size = input_size * 35
-        output_size = output_size * 35
+        # input_size = input_size * 35
+        # output_size = output_size * 35
         self.input_size = input_size
         self.seq_len = 6
         self.batch_size = 1

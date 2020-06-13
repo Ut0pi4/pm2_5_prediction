@@ -186,7 +186,7 @@ if __name__ == "__main__":
     
     parser.add_argument('--dest', type=str, default="../air_quality", help='path to dataset.')
     parser.add_argument('--epochs', type=int, default=50, help='epochs to train')
-    parser.add_argument('--weights', type=list, default=[1, 1, 1, 1, 1, 1], help='weights to train')
+    parser.add_argument('--weights', type=list, default=[0.05, 0.05, 1, 3, 3, 5], help='weights to train')
 
 
     args = parser.parse_args()
@@ -225,8 +225,8 @@ if __name__ == "__main__":
         decoder_optimizer = checkpoint["decoder_optimizer"]
     else:
         epoch = 1
-        encoder_optimizer = optim.SGD(encoder.parameters(), lr=learning_rate)
-        decoder_optimizer = optim.SGD(decoder.parameters(), lr=learning_rate)
+        encoder_optimizer = optim.Adam(encoder.parameters(), lr=learning_rate)
+        decoder_optimizer = optim.Adam(decoder.parameters(), lr=learning_rate)
 
     if epoch <= epochs:
         print("start training from epoch %d" %epoch)
