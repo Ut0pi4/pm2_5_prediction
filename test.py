@@ -9,6 +9,7 @@ import argparse
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+
 def accuracy(pred, target):
 
     pred = pred.squeeze()
@@ -25,7 +26,7 @@ def accuracy(pred, target):
         counts_pred[i] = np.sum(np_pred[index]==i)
     return accu, counts_pred, counts_target
 
-
+# Modified from https://pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html
 def evaluate(input_tensor_1, input_tensor_2, target_tensor, encoder, decoder):
     encoder.eval()
     decoder.eval()
@@ -113,12 +114,12 @@ if __name__ == "__main__":
     file_name = "北京空气质量.zip"
     dest = args.dest
     
-    _, _, feature_data, pm2_5s = preprocess(file_name, dest)
+    feature_data, pm2_5s = preprocess(file_name, dest)
 
     
-    data_e_1 = feature_data
-    data_e_2 = pm2_5s[:, :24, :]
-    data_d = pm2_5s[:, 24:30, :]
+    data_e_1 = feature_data[0]
+    data_e_2 = pm2_5s[0][:, :24, :]
+    data_d = pm2_5s[0][:, 24:30, :]
 
     checkpoint = args.checkpoint
     encoder = EncoderRNN(input_size_enc, hidden_size).to(device)
@@ -141,4 +142,4 @@ if __name__ == "__main__":
         print("eval_loss: ", eval_loss)
         print("eval_accu: ", eval_accu)
     else:
-        print("train a model first before testing.")
+        print("train a model first before testing or set path to checkpoint correctly.")

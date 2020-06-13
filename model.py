@@ -198,6 +198,7 @@ class DecoderRNN(nn.Module):
         
         return torch.zeros(self.n_layers, self.batch_size, self.hidden_size, device=device)
 
+# Modified from https://pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html
 class EncoderRNN(nn.Module):
     def __init__(self, input_size, hidden_size, n_layers=1, dropout=0.1):
         super(EncoderRNN, self).__init__()

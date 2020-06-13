@@ -20,13 +20,13 @@ from preprocessing import preprocess
 
 teacher_forcing_ratio = 0.5
 
-
+# Taken from https://pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html
 def asMinutes(s):
     m = math.floor(s / 60)
     s -= m * 60
     return '%dm %ds' % (m, s)
 
-
+# Taken from https://pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html
 def timeSince(since, percent):
     now = time.time()
     s = now - since
@@ -36,8 +36,7 @@ def timeSince(since, percent):
     return '%s (- %s)' % (asMinutes(s), asMinutes(rs))
 
 
-
-
+# Taken from https://pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html
 def showPlot(points):
     plt.figure()
     fig, ax = plt.subplots()
@@ -54,6 +53,7 @@ def reshape_data(data, i):
     new_data = np.concatenate((data1, data2), axis=2)
     return new_data
 
+# Taken from https://pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html
 def save_checkpoint(epoch, encoder, decoder, encoder_optimizer, decoder_optimizer):
     """
     Save model checkpoint.
@@ -70,6 +70,7 @@ def save_checkpoint(epoch, encoder, decoder, encoder_optimizer, decoder_optimize
     filename = '../checkpoint_lstm.pth.tar'
     torch.save(state, filename)
 
+# Modified from https://pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html
 def train_one_epoch(input_tensor_1, input_tensor_2, target_tensor, encoder, decoder, encoder_optimizer, decoder_optimizer, criterion):
     hn_1 = encoder.initHidden()
     cn_1 = encoder.initHidden()
@@ -133,6 +134,7 @@ def train_one_epoch(input_tensor_1, input_tensor_2, target_tensor, encoder, deco
 
     return loss.item() / target_length
 
+# Modified from https://pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html
 def train(data_e_1, data_e_2, data_d, encoder, decoder, encoder_optimizer, decoder_optimizer, 
                start_epoch, epochs, weights=[0.05, 0.05, 1, 3, 3, 5], print_every=1, 
                plot_every=1, learning_rate=0.01):
@@ -205,12 +207,14 @@ if __name__ == "__main__":
     file_name = "北京空气质量.zip"
     dest = args.dest
     
-    feature_data, pm2_5s, _, _ = preprocess(file_name, dest)
+    feature_data, pm2_5s = preprocess(file_name, dest)
 
     
-    data_e_1 = feature_data
-    data_e_2 = pm2_5s[:, :24, :]
-    data_d = pm2_5s[:, 24:30, :]
+    train_set = concat_years(pm2_5s[1:])
+    data_e_1 = concat_years(feature_data[1:])
+
+    data_e_2 = train_set[:, :24, :]
+    data_d = train_set[:, 24:30, :]
 
     checkpoint = args.checkpoint
     encoder = EncoderRNN(input_size_enc, hidden_size).to(device)
@@ -231,7 +235,7 @@ if __name__ == "__main__":
 
     if epoch <= epochs:
         print("start training from epoch %d" %epoch)
-        train(data_e_1, data_e_2, data_d, encoder, decoder, encoder_optimizer, decoder_optimizer, epoch, epochs, weights=weights)
+        train(data_e_1, data_e_2, data_d, encoder, decoder, encoder_optimizer, decoder_optimizer, epoch, epochs)
     else:
         print("epoch trained (%d) exceeds maximum epochs (%d)" %(epoch, epochs))
     print("finish training")
