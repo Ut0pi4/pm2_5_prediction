@@ -98,7 +98,7 @@ if __name__ == "__main__":
     
     parser.add_argument('--dest', type=str, default="../air_quality", help='path to dataset.')
     parser.add_argument('--epochs', type=int, default=10, help='epochs to train')
-    
+    parser.add_argument('--checkpoint', type=str, default='../checkpoint_lstm.pth.tar', help="path to checkpoint")
     args = parser.parse_args()
 
     hidden_size = 64
@@ -120,7 +120,7 @@ if __name__ == "__main__":
     data_e_2 = pm2_5s[:, :24, :]
     data_d = pm2_5s[:, 24:30, :]
 
-    checkpoint = '../checkpoint_lstm.pth.tar'
+    checkpoint = args.checkpoint
     encoder = EncoderRNN(input_size_enc, hidden_size).to(device)
     decoder = RevisedDecoderRNN(input_size_dec, hidden_size, output_size).to(device)
 
