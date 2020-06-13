@@ -2,92 +2,128 @@
 import os
 import numpy as np
 from preprocessing import preprocess
-from model import EncoderRNN, DecoderRNN
+from model import *
 import torch
 import torch.nn as nn
+import argparse
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def accuracy(pred, target):
-#     set_trace()
+
     pred = pred.squeeze()
     np_pred = pred.cpu().numpy()
     np_target = target.cpu().numpy()
-    d, k = pred.shape
-    accu = np.sum(np_pred==np_target)/(d*k)
-    return accu
+    d = pred.shape
+    accu = np.sum(np_pred==np_target)/(d)
+    counts_pred = np.zeros((6))
+    counts_target = np.zeros((6))
 
-def evaluate(input_tensor, target_tensor, encoder, decoder):
+    for i in range(6):
+        counts_target[i] = np.sum(np_target==i)
+        index = np.where(np_target==i)
+        counts_pred[i] = np.sum(np_pred[index]==i)
+    return accu, counts_pred, counts_target
+
+
+def evaluate(input_tensor_1, input_tensor_2, target_tensor, encoder, decoder):
     encoder.eval()
     decoder.eval()
     
     accu_all = []
     
-    loss = 0
+    losses = 0
     criterion = nn.NLLLoss()
     
+    target_length = target_tensor.size(0)
+    counts_p_all = np.zeros((6))
+    counts_t_all = np.zeros((6))
+    batch_loss = []
     with torch.no_grad():
-        hn = encoder.initHidden()
-        cn = encoder.initHidden()
+        hn_1 = encoder.initHidden()
+        cn_1 = encoder.initHidden()
+        hn_2 = encoder.initHidden()
+        cn_2 = encoder.initHidden()
+        hn = decoder.initHidden()
+        cn = decoder.initHidden() 
+        
+        for ei in range(input_tensor_1.size(0)):
+            _, (hn_1, cn_1) = encoder(
+                input_tensor_1[ei], hn_1, cn_1)
+        
+        for ei in range(input_tensor_2.size(0)):
+            _, (hn_2, cn_2) = encoder(
+                input_tensor_2[ei], hn_2, cn_2)
 
-        input_length = input_tensor.size(0)
-        target_length = target_tensor.size(0)
+        
+        combine = Combine(encoder.hidden_size, decoder.output_size).to(device)
 
-    #     encoder_outputs = torch.zeros(input_length, 24, encoder.hidden_size, device=device)
-
-        for ei in range(input_length):
-            encoder_output, (hn, cn) = encoder(
-                input_tensor[ei], hn, cn)
-
-
-        decoder_input = target_tensor[0, :]
-
+        hn, cn = combine(hn_1, cn_1, hn_2, cn_2)
+        hn = hn.repeat(1, decoder.batch_size, 1)
+        cn = cn.repeat(1, decoder.batch_size, 1)
+        
+        decoder_input = target_tensor[0, :6]    
+        
+              
         for di in range(target_length):
-            decoder_output, (hn, cn) = decoder(decoder_input, hn, cn) 
-            loss += criterion(decoder_output, target_tensor[di, :].view(-1,).long())
-
+            
+            decoder_output, (hn, cn) = decoder(decoder_input, hn, cn)  
+            loss = criterion(decoder_output, target_tensor[di, :].view(-1,).long())
+            losses += loss
+            batch_loss.append(loss.item())
             decoder_output = decoder_output.view(6, 35 ,6)
             topv, topi = decoder_output.topk(1, dim=2)
-            
-            accu_all.append(accuracy(topi, target_tensor[di, :]))
+            accu, pred_counts, target_counts = accuracy(topi.view(-1), target_tensor[di, :].view(-1))
+            counts_p_all += pred_counts
+            counts_t_all += target_counts
+            accu_all.append(accu)
             decoder_input = topi.squeeze().detach()
+            
 #     set_trace()
-    return loss.item() / target_length, np.mean(accu_all)
+    # x = np.arange(len(accu_all))   
+    # plt.plot(x, accu_all)
+    # plt.ylabel("accuracy")
+    # plt.show()
+
+    # x = np.arange(len(batch_loss))   
+    # plt.plot(x, batch_loss)
+    # plt.ylabel("loss")
+    # plt.show()
+    return losses.item() / target_length, np.mean(accu_all), accu_all, counts_p_all, counts_t_all
 
 if __name__ == "__main__":
 
 
     parser = argparse.ArgumentParser(description="PM2.5 Prediction")
-    parser.add_argument('--hidden_size', type=int, default=256, help='hidden size')
+    
     parser.add_argument('--dest', type=str, default="../air_quality", help='path to dataset.')
     parser.add_argument('--epochs', type=int, default=10, help='epochs to train')
-    parser.add_argument('--lr', type=float, default=0.001, help='learning rate for training')
-    parser.add_argument('--input_type', type=int, default=0, help='0 or 1, choose which input type to run')
+    
     args = parser.parse_args()
 
-    hidden_size = args.hidden_size
+    hidden_size = 64
     input_size_enc = 35
-    input_size_dec = 35
-    output_size = 35
+    input_size_dec = 6 * 35
+    output_size = 6 * 35
     epochs = args.epochs
-    learning_rate = args.lr
+    learning_rate = 0.001
 
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    
     file_name = "北京空气质量.zip"
     dest = args.dest
     
-    feature_data, pm2_5s_1, pm2_5s_2, pm2_5s_1_2014, pm2_5s_2_2014 = preprocess(file_name, dest)
+    _, _, feature_data, pm2_5s = preprocess(file_name, dest)
 
-    checkpoint = '../checkpoint_lstm.pth_'+input_type+'.tar'
+    
+    data_e_1 = feature_data
+    data_e_2 = pm2_5s[:, :24, :]
+    data_d = pm2_5s[:, 24:30, :]
+
+    checkpoint = '../checkpoint_lstm.pth.tar'
     encoder = EncoderRNN(input_size_enc, hidden_size).to(device)
-    decoder = DecoderRNN(input_size_dec, hidden_size, output_size).to(device)
+    decoder = RevisedDecoderRNN(input_size_dec, hidden_size, output_size).to(device)
 
-    flag = 0
-    if flag == 1:
-        data_e = feature_data
-        data_d = pm2_5s_2[:, :6, :]
-    else:
-        data_e = pm2_5s_1[:, :24, :]
-        data_d = pm2_5s_1[:, 24:24+6, :]
 
     if os.path.exists(checkpoint):
         checkpoint = torch.load(checkpoint)    
@@ -98,9 +134,10 @@ if __name__ == "__main__":
         encoder_optimizer = checkpoint["encoder_optimizer"]
         decoder_optimizer = checkpoint["decoder_optimizer"]
     
-        input_tensor = torch.from_numpy(data_e).to(device)
+        input_tensor_1 = torch.from_numpy(data_e_1).to(device)
+        input_tensor_2 = torch.from_numpy(data_e_2).to(device)
         target_tensor = torch.from_numpy(data_d).to(device)
-        eval_loss, eval_accu = evaluate(input_tensor, target_tensor, encoder, decoder)
+        eval_loss, eval_accu, accu_all, counts_p_all, counts_t_all = evaluate(input_tensor_1, input_tensor_2, target_tensor, encoder, decoder)
         print("eval_loss: ", eval_loss)
         print("eval_accu: ", eval_accu)
     else:
