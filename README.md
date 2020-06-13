@@ -50,17 +50,20 @@ To train the model, run the following code.
 $ python train.py --dest YOUR_DATASET_PATH 
                   --epochs EPOCHS_TO_TRAIN 
                   --weights WEIGHTS_TO_TRAIN
+                  --checkpoint PATH_TO_CHECKPOINT
 ```
 Default parameters:
 1. dest: `".../air_quality"`
 2. epochs: `10`
 3. weights: `[0.05, 0.05, 1, 3, 3, 5]`
+4. checkpoint: `'../checkpoint_lstm_1.pth.tar'`
 
 # Evaluate
 To evaluate the model, run the following code.
 ```python
 $ python test.py --dest YOUR_DATASET_PATH 
-                 --epochs EPOCHS_TO_TRAIN 
+                 --epochs EPOCHS_TO_TRAIN
+                 --checkpoint PATH_TO_CHECKPOINT
 ```
 Default parameters are the same as train.py.
 
