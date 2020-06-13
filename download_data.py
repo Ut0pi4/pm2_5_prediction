@@ -26,7 +26,8 @@ def extract_files(filepath):
     print('Extracting', filepath)
     
     split = filepath.split("/")
-    dest = "../" + split[1]
+    dest = os.path.join("../", split[1])
+    # dest = "../" + split[1]
 
     with zipfile.ZipFile(filepath+".zip", 'r') as zip_ref:
         # set_trace()
