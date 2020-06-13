@@ -1,17 +1,8 @@
 
-– 按模块描述压缩包中每部分文件的作用。
-– 运行代码所需的软件环境和软件版本，并提供从裸的操作系统开始配置所需环境的命令。
-– 整理数据的命令。
-– 训练所提交的最优模型的命令。按此命令训练出的模型，不应当与用提交的模型参数加载出的最优模
-型性能差异过大。
-– 用上一步训练出来的模型在测试集数据上测试的命令。
-– 用提交的最优模型在测试集数据上测试的命令，以及预期的结果。
 
 # PM2.5 forecast with LSTM Seq2Seq model
 
-
-
-
+<!---
 # Contents
 
 [***Requirements***](https://github.com/Ut0pi4/pm2_5_prediction#objective)
@@ -23,12 +14,16 @@
 [***Evaluation***](https://github.com/Ut0pi4/pm2_5_prediction#evaluation)
 
 [***Results***](https://github.com/Ut0pi4/pm2_5_prediction#inference)
-
+-->
 # Requirements 
 - `Python 3.7.7`
 - `PyTorch 1.5.0`
 - `Tensorflow-gpu 2.1.0`
 - `cudatoolkit 10.1`
+
+To install the conda environment via yml, please run the following code:
+
+`conda create --name myenv -f pm2_5_env.yml`
 
 # Overview
 
@@ -49,32 +44,26 @@ $ python preprocessing.py --dest YOUR_DATASET_PATH
 ```
 Default dataset path is `../air_quality`.
 # Training
-There are two input types available. One is by passing air pollutants data like SO2, CO etc. The other is to pass past PM2.5 data to make forecast. More details can be found in report.pdf. To train the model, run the following code.
+
+To train the model, run the following code.
 ```python
 $ python train.py --dest YOUR_DATASET_PATH 
-                  --hidden_size HIDDEN_SIZE 
-                  --epochs EPOCHS 
-                  --lr LEARNING_RATE
-                  --input_type 0_OR_1
+                  --epochs EPOCHS_TO_TRAIN 
+                  --weights WEIGHTS_TO_TRAIN
 ```
 Default parameters:
 1. dest: `".../air_quality"`
-2. hidden_size: `256`
-3. epochs: `10`
-4. lr: `0.001`
-5. input_type: `0`
+2. epochs: `10`
+3. weights: `[0.05, 0.05, 1, 3, 3, 5]`
 
 # Evaluate
 To evaluate the model, run the following code.
 ```python
 $ python test.py --dest YOUR_DATASET_PATH 
-                  --hidden_size HIDDEN_SIZE 
-                  --epochs EPOCHS 
-                  --lr LEARNING_RATE
-                  --input_type 0_OR_1
+                  --epochs EPOCHS_TO_TRAIN 
 ```
 Default parameters are the same as train.py.
-
+<!---
 ___
 ### Some definitions
 
@@ -877,3 +866,4 @@ Redundant detections aren't really a problem since we're NMS-ing the hell out of
 
 ---
 
+-->
