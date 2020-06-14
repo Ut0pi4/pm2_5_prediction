@@ -33,14 +33,14 @@ This is an introduction of making PM2.5 forecast using the LSTM Seq2Seq model. T
 # Download Data
 The dataset for this task can be downloaded by running the code below.
 ```python
-$ python download_data.py --dest YOUR_DATASET_PATH
+$ python download_data.py --dest=YOUR_DATASET_PATH
 ```
 Default `dest` is `../air_quality`.
 
 # Download pretrained model
 To download the best pretrained model, please run the following code:
 ```python
-$ python download_model.py --checkpoint PATH_TO_CHECKPOINT
+$ python download_model.py --checkpoint=PATH_TO_CHECKPOINT
 ```
 
 Default `checkpoint` is `../`.
@@ -49,17 +49,17 @@ Default `checkpoint` is `../`.
 As mentioned in the report, some data has been filtered out for the model to work.
 To run the preprocessing of the dataset,  run
 ```python
-$ python preprocessing.py --dest YOUR_DATASET_PATH
+$ python preprocessing.py --dest=YOUR_DATASET_PATH
 ```
 Default dataset path is `../air_quality`.
 # Training
 
 To train the model, run the following code.
 ```python
-$ python train.py --dest YOUR_DATASET_PATH 
-                  --epochs EPOCHS_TO_TRAIN 
-                  --weights WEIGHTS_TO_TRAIN
-                  --checkpoint PATH_TO_CHECKPOINT
+$ python train.py --dest=YOUR_DATASET_PATH 
+                  --epochs=EPOCHS_TO_TRAIN 
+                  --weights=WEIGHTS_TO_TRAIN
+                  --checkpoint=PATH_TO_CHECKPOINT
 ```
 Default parameters:
 1. dest: `".../air_quality"`
@@ -70,9 +70,9 @@ Default parameters:
 # Evaluate
 To evaluate the model, run the following code.
 ```python
-$ python test.py --dest YOUR_DATASET_PATH 
-                 --epochs EPOCHS_TO_TRAIN
-                 --checkpoint PATH_TO_CHECKPOINT
+$ python test.py --dest=YOUR_DATASET_PATH 
+                 --epochs=EPOCHS_TO_TRAIN
+                 --checkpoint=PATH_TO_CHECKPOINT
 ```
 Default parameters are the same as train.py.
 
