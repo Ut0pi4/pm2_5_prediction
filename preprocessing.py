@@ -1,6 +1,7 @@
 import os
 import csv
 import copy
+from pdb import set_trace
 
 import argparse
 import numpy as np
@@ -407,15 +408,16 @@ def concat_years(arr_data):
         ind = ind + ind_last
     return new_data    
 
-def preprocess(file_name, dest):
+def preprocess(dest):
 
-    folderpath = download_and_extract(file_name, dest)
+    # folderpath = download_and_extract(file_name, dest)
     for key, values in REMOVED_CSV.items():
         print("length of REMOVED_CSV in year %s: %d" %(key, len(values)))
     print("")  
-
+    folderpath = dest + "/北京空气质量"
 
     if os.path.exists(folderpath):
+        # folderpath = folderpath + "/北京空气质量/"
         for item in os.listdir(folderpath):
             if ".zip" not in item and "beijing" in item:
                 clean(folderpath+"/"+item)
@@ -452,17 +454,3 @@ def preprocess(file_name, dest):
     return feature_data, pm2_5s_years, feature_data_2014, pm2_5s_years_2014 
 
 
-
-if __name__ == "__main__":
-
-    parser = argparse.ArgumentParser(description="PM2.5 Prediction")
-    
-    parser.add_argument('--dest', type=str, default="../air_quality", help='path to dataset.')
-    
-    args = parser.parse_args()
-
-    file_name = "北京空气质量.zip"
-    dest = args.dest
-    
-    preprocess(file_name, dest)
-    

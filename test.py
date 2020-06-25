@@ -97,7 +97,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="PM2.5 Prediction")
     
-    parser.add_argument('--dest', type=str, default="../air_quality", help='path to dataset.')
+    parser.add_argument('--dest', type=str, default="../air_quality/北京空气质量/", help='path to dataset.')
     parser.add_argument('--epochs', type=int, default=10, help='epochs to train')
     parser.add_argument('--checkpoint', type=str, default='../checkpoint_lstm.pth.tar', help="path to checkpoint")
     args = parser.parse_args()
@@ -114,7 +114,7 @@ if __name__ == "__main__":
     file_name = "北京空气质量.zip"
     dest = args.dest
     
-    _, _, feature_data, pm2_5s = preprocess(file_name, dest)
+    _, _, feature_data, pm2_5s = preprocess(dest)
 
     
     data_e_1 = feature_data

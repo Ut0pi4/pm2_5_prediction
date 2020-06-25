@@ -3,7 +3,7 @@ import random
 import time
 import math
 import os
-
+from pdb import set_trace
 import argparse
 import matplotlib.pyplot as plt
 plt.switch_backend('agg')
@@ -186,7 +186,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="PM2.5 Prediction")
     
-    parser.add_argument('--dest', type=str, default="../air_quality", help='path to dataset.')
+    parser.add_argument('--dest', type=str, default="../air_quality/北京空气质量/", help='path to dataset.')
     parser.add_argument('--epochs', type=int, default=50, help='epochs to train')
     parser.add_argument('--weights', type=list, default=[0.05, 0.05, 1, 3, 3, 5], help='weights to train')
     parser.add_argument('--checkpoint', type=str, default='../checkpoint_lstm.pth.tar', help="path to checkpoint")
@@ -207,7 +207,7 @@ if __name__ == "__main__":
     file_name = "北京空气质量.zip"
     dest = args.dest
     
-    feature_data, pm2_5s, _, _ = preprocess(file_name, dest)
+    feature_data, pm2_5s, _, _ = preprocess(dest)
 
     
     

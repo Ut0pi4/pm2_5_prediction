@@ -35,7 +35,8 @@ def extract_files(filepath):
             # set_trace()
             member.filename = member.filename.encode("cp437").decode("utf8")
             zip_ref.extract(member, dest)
-    
+    # set_trace()
+    filepath = filepath + "/北京空气质量"
     for item in os.listdir(filepath): 
         
         if item.endswith(".zip"): 

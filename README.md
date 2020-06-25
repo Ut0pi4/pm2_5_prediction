@@ -45,6 +45,13 @@ $ python download_model.py --checkpoint=PATH_TO_CHECKPOINT
 
 Default `checkpoint` is `../`.
 
+# Preprocess Data
+As mentioned in the report, some data has been filtered out for the model to work.
+To run the preprocessing of the dataset,  run
+```python
+$ python preprocessing.py --dest=YOUR_DATASET_PATH
+```
+Default dataset path is `../air_quality`.
 # Training
 
 To train the model, run the following code.
